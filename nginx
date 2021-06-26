@@ -1,0 +1,31 @@
+#!/bin/sh
+
+cat << EOS 
+============================================="
+This is a script for setting up Apache
+=============================================
+EOS
+S=systemctl
+N=nginx
+R=/etc/yum.repos.d/nginx.repo
+
+touch $R
+cat << 'EOF' > $R
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/mainline/centos/7/$basearch/
+gpgcheck=0
+enabled=1
+EOF
+
+yum -y install $N
+yum list installed | grep "nginx"
+$S status $N
+$S start $N
+$S enable $N
+$S status $N
+if [ $? = 0 ]; then
+  echo "Set up properly!"
+else
+  echo "Something went wrong!"
+fi
